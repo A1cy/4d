@@ -1,15 +1,16 @@
 <?php
-$host = "localhost";
-$dbname = "users";
-$username = "root"; 
-$password = "";
+$url = parse_url(getenv("CLEARDB_DATABASE_URL"));
 
-$conn = new mysqli($host, $username, $password, $dbname);
+$host = $url["host"];
+$username = $url["user"];
+$password = $url["pass"];
+$database = substr($url["path"], 1);
+
+$conn = new mysqli($host, $username, $password, $database);
 
 if ($conn->connect_error) {
   die("Connection failed: " . $conn->connect_error);
 }
 
-// Set the character set to UTF-8
 $conn->set_charset("utf8");
 ?>
