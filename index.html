@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>4d assessment Webpage</title>
+
+    <!-- Link external CSS stylesheet -->
+    <link rel="stylesheet" type="text/css" href="/styles.css" />
+
+    <!-- Embed responsive viewport meta tag -->
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+  </head>
+
+  <body>
+    <!-- Header section -->
+    <header>
+      <h1>My Webpage</h1>
+      <nav>
+        <ul>
+            <li><a href="login.php">Login</a></li> <!-- Add this line for the login button -->
+        </ul>
+    </nav>
+   
+    </header>
+
+       <!-- Add button -->
+       
+     
+
+    <!-- Main content section -->
+    <main>
+
+    
+      
+      
+      <!-- Add form -->
+      <form id="form" action="add_users.php" method="POST">
+        <button style="width: 100%;" showAlert()">Welcome!</button>
+<BR></BR>
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" /><br /><br />
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" /><br /><br />
+
+        <label for="dob">Date of Birth:</label>
+        <input type="date" id="dob" name="birth_date" /><br /><br />
+
+        <input type="submit" value="Submit" />
+      </form>
+      <div class="flex-container">
+        <div id="user-list">
+            <h2>Users</h2>
+            <ul>
+                <li><a href="#" data-id="1" class="user-link">hadi</a></li>
+                <!-- Other user list items -->
+            </ul>
+        </div>
+        <div id="user-details">
+            <h2>User Details</h2>
+            <p><strong>Name:</strong> </p>
+            <p><strong>Email:</strong> </p>
+            <p><strong>Date of Birth:</strong> </p>
+        </div>
+    </div>
+
+
+      
+
+    
+    </main>
+
+    <!-- Footer section -->
+    <footer>
+      <p>&copy; 2023 My Webpage</p>
+    </footer>
+
+    <script>
+      // Fetch user list on load
+      fetchUsers();
+
+      const form = document.getElementById("form");
+
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        // Validation
+        if (!form.checkValidity()) {
+          alert("Please fill all fields");
+          return;
+        }
+
+        // Submit form data
+        const data = new FormData(form);
+
+        fetch("add_users.php", {
+          method: "POST",
+          body: data,
+        })
+          .then((response) => response.text())
+          .then((result) => {
+            console.log(result);
+            fetchUsers(); // Refresh user list
+          })
+          .catch((error) => console.error(error));
+      });
+
+      // Fetch users
+      function fetchUsers() {
+        fetch("get_users.php")
+          .then((response) => response.json())
+          .then((data) => {
+            displayUsers(data);
+          });
+      }
+
+      // Display users
+      function displayUsers(users) {
+        let output = "<h2>Users</h2><ul>";
+        users.forEach((user) => {
+          output += `<li>${user.name} - ${user.email}</li>`;
+        });
+        output += "</ul>";
+
+        document.getElementById("user-list").innerHTML = output;
+      }
+
+      // Show alert on button click
+      function showAlert() {
+        alert("Hello there!");
+      }
+    </script>
+
+    <script>
+
+
+// Fetch user list on load
+fetchUsers();
+
+const userList = document.getElementById('user-list');
+const userDetails = document.getElementById('user-details');
+
+// Display users
+function displayUsers(users) {
+  let output = '<h2>Users</h2><ul>';
+  users.forEach(user => {
+    output += `<li><a href="#" data-id="${user.id}" class="user-link">${user.name}</a></li>`;
+  });
+  output += '</ul>';
+
+  userList.innerHTML = output;
+
+  // Add click event listener to user links
+  const userLinks = document.querySelectorAll('.user-link');
+  userLinks.forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      const userId = e.target.getAttribute('data-id');
+      fetchUserDetails(userId);
+    });
+  });
+}
+
+// Fetch and display user details
+function fetchUserDetails(userId) {
+  fetch(`get_user.php?id=${userId}`)
+    .then(response => response.json())
+    .then(user => {
+      let output = '<h2>User Details</h2>';
+      output += `<p><strong>Name:</strong> ${user.name}</p>`;
+      output += `<p><strong>Email:</strong> ${user.email}</p>`;
+      output += `<p><strong>Date of Birth:</strong> ${user.birth_date}</p>`;
+      userDetails.innerHTML = output;
+    });
+}
+
+
+
+    </script>
+  </body>
+</html>
